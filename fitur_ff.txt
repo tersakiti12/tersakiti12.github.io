@@ -1,0 +1,1 @@
+AimBot,Aimbot_HS_50%;aimbot50-Aimbot_HS_100%;aimbot100@Misc,ESP_Label;espLabel-ESP_Line_Material;espLinematerial@Player,Antena_Male;antenaMale-Antena_Female;antenaFemale-Run_Medkit;runMedkit-Speed_x4;speed4-No_Fog;noFog-Invisible_Hack;ghostHack-Speed_In_Water;noWater-All_Male;allMale-All_Female;allFemale@Null,null;null
