@@ -8,6 +8,23 @@
 <title>Aghisna</title>
 </head>
 <body>
-  <marquee direction="left">Telegram : @modnesia</marquee>
+<marquee direction="left">Telegram : @modnesia</marquee>
+<script type="text/javascript">
+function get_user() {
+  var url = new URL(window.location.href);
+  var user_id = url.searchParams.get("user");
+  return user_id;
+}
+
+function set_title(title) {
+  if (document.title != title) {
+    document.title = title;
+  }
+}
+  
+if (get_user() != "") {
+  set_title(get_user());
+}
+</script>
 </body>
 </html>
