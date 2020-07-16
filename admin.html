@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>Tersakiti</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+      <style type="text/css">
+         /* The Modal (background) */
+         .modal {
+         display: none; /* Hidden by default */
+         position: fixed; /* Stay in place */
+         z-index: 1; /* Sit on top */
+         left: 0;
+         top: 0;
+         width: 100%; /* Full width */
+         height: 100%; /* Full height */
+         overflow: auto; /* Enable scroll if needed */
+         background-color: rgb(0,0,0); /* Fallback color */
+         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+         }
+         .modal:focus {
+         opacity: 1;
+         transition: opacity 1s;
+         }
+         #modal.hide {
+         opacity: 0;
+         }
+         /* Modal Content/Box */
+         .modal-content {
+         background-color: #fefefe;
+         margin: 15% auto; /* 15% from the top and centered */
+         padding: 20px;
+         border: 1px solid #888;
+         width: 80%; /* Could be more or less, depending on screen size */
+         }
+         /* The Close Button */
+         .close {
+         position: absolute;
+         top: 10px;
+         right: 30px;
+         color: #aaa;
+         float: right;
+         font-size: 28px;
+         font-weight: bold;
+         }
+         .close:hover,
+         .close:focus {
+         color: black;
+         text-decoration: none;
+         cursor: pointer;
+         }
+      </style>
+   </head>
+   <body>
+      <nav class="navbar navbar-light bg-light">
+         <a class="navbar-brand" href="admin.html">Tersakiti&trade;</a>
+         <div id="admin" class="btn-toolbar" role="toolbar" aria-lable="toolbar button" style="display:none;">
+            <div class="btn-group mr-2">
+               <button class="btn btn-info" onclick="cek('adduserform', true);cek('result', false);set_default_date();" id="adduser">ADD USER</button>
+            </div>
+            <div class="btn-group mr-2">
+               <button class="btn btn-danger" onclick="sign_out()" id="logout">LOGOUT</button>
+            </div>
+         </div>
+      </nav>
+      <div class="alert alert-primary" role="alert" id="success" style="display: none;">
+         Error!
+      </div>
+      <div class="alert alert-warning" role="alert" id="error" style="display: none;">
+         Error!
+      </div>
+      <div class="text-center mt-4 mb-4" id="backhome" style="display:none;">
+         <button class="btn btn-primary" onclick="open_url('admin.html', false)">Back Home</button>
+      </div>
+      <div id="myModal" class="modal">
+         <div class="modal-content">
+            <span class="close" onclick="cek('myModal', false)">&times;</span>
+            <h2>User Details</h2>
+            <p>Email : <span id="email"></span></p>
+            <p>License : <span id="licenseuser"></span></p>
+            <p>Join : <span id="joindate"></span></p>
+            <p>Expired : <span id="expireddate"></span></p>
+            <div id="tmpmail"></div>
+         </div>
+      </div>
+      <div id="myModalDel" class="modal">
+         <div class="modal-content">
+            <span class="close" onclick="cek('myModalDel', false)">&times;</span>
+            <h2>Information</h2>
+            <p>User Phone : <span id="delemail"></span></p>
+            <p>License : <span id="dellicenseuser"></span></p>
+            <p>Join : <span id="deljoindate"></span></p>
+            <p>Expired : <span id="delexpireddate"></span></p>
+            <div id="tmpdel"></div>
+         </div>
+      </div>
+      <div class="container">
+         <div class="text-center mt-5" id="wait" style="display: none;">
+            <div class="spinner-border" role="status">
+               <span class="sr-only">Loading...</span>
+            </div>
+         </div>
+         <form id="login" onsubmit="sign_in()" style="display: block;">
+            <div class="form-group modal-sm mx-auto">
+               <h1 class="text-center">Please sign in</h1>
+               <label for="inputKey" class="mt-2">Input Key</label>
+               <input type="text" id="inputKey" class="form-control" placeholder="Key..." required autofocus>
+               <input  type="button" class="btn btn-primary btn-block mt-2" onclick="sign_in()" value="Sign in">
+               <center>
+                  <p class="mt-3 mb-3 text-muted">Tersakiti&trade; &copy; 2020</p>
+               </center>
+            </div>
+         </form>
+         <form id="adduserform" style="display: none;">
+            <div class="form-group modal-sm mx-auto">
+               <h1 class="text-center">Add User</h1>
+               <label for="inputEmailPhone" class="mt-1">User Email/Phone</label>
+               <input type="text" id="inputEmailPhone" class="form-control" onkeypress="return event.keyCode != 13" placeholder="Email/Phone Number" required autofocus>
+               <div>
+                  <label for="setstart" class="mt-1">Set Start Date</label>
+                  <input type="checkbox" id="setstart" onclick="set_start_date();"/>
+               </div>
+               <div id="startDateForm" style="display: none;">
+                  <label for="startDate" class="mt-1">Start Date</label>
+                  <input class="form-control" type="date" id="startDate" />
+               </div>
+               <div>
+                  <label for="setexpired" class="mt-1">Set Expired</label>
+                  <input type="checkbox" id="setexpired" onclick="set_expired();"/>
+               </div>
+               <div id="expiredForm" style="display: none;">
+                  <label for="expiredDate" class="mt-1">Expired Date</label>
+                  <input class="form-control" type="date" id="expiredDate" />
+               </div>
+               <div id="setwaktu">
+                  <label for="waktu" class="mt-1">Duration</label>
+                  <select class="form-control" id="waktu">
+                     <option>1 week</option>
+                     <option>2 week</option>
+                     <option selected>1 month</option>
+                  </select>
+               </div>
+               <input type="button" class="btn btn-primary btn-block mt-2" onclick="add_user()" value="Add User">
+               <input  type="button" class="btn btn-danger btn-block mt-2" onclick="cek('adduserform', false);cek('result', true);" value="Close">
+               <center>
+                  <p class="mt-3 mb-3 text-muted">Tersakiti&trade; &copy; 2020</p>
+               </center>
+            </div>
+         </form>
+         <div class="table-responsive" style="display: none;" id="result">
+            <h1 class="mt-3 mb-3 text-center">User Lists</h1>
+            <table class="table table-bordered" id="userlist">
+               <thead>
+                  <tr>
+                     <th scope="col">Users <span class="badge badge-pill badge-primary" id="total"></span></th>
+                     <th scope="col">Expired</th>
+                     <th scope="col">Status <a class="badge badge-pill badge-warning" id="online"></a><a class="badge badge-pill badge-primary ml-2" id="offline"></a></th>
+                     <th scope="col">Action</th>
+                  </tr>
+               </thead>
+               <tbody>
+               </tbody>
+            </table>
+         </div>
+      </div>
+      <script>
+         var _0x4256=['feb','userlist','startDate','email','toString','getDate','<input\x20type=\x27text\x27\x20class=\x27form-control\x27\x20value=\x27','okt','getTime','expiredForm','action=auth&token=','now','expiredDate','\x27,\x20\x27','2\x20week','apr','setDate','style','<span\x20class=\x22close\x22\x20onclick=\x22cek(\x27success\x27,\x20false)\x22>&times;</span>','block','substring','result','agust','</span>','\x27)\x22>Delete</button>','success','getFullYear','none','admin','tmpdel','email_phone','getElementById','data','last_online','wait','des','src','id_','createElement','offline','jun','replace','tbody','&start=','online','deljoindate','\x09\x09<span\x20class=\x22badge\x20badge-pill\x20badge-danger\x22>Expired!</span>','<span\x20class=\x22badge\x20badge-pill\x20badge-warning\x22>Online</span>\x09<span\x20class=\x22badge\x20badge-pill\x20badge-success\x22\x20style=\x22opacity:\x201;transition:\x20all\x200.25s;\x22>','error','joindate','1\x20week','length','myModalDel','jan','includes','setwaktu','mei','charAt','startDateForm','register','cookie','_self','setexpired','expired','inputKey','login','substr','insertCell','type','<span\x20class=\x22badge\x20badge-pill\x20badge-primary\x22>Offline</span>\x09<span\x20class=\x22badge\x20badge-pill\x20badge-info\x22\x20style=\x22opacity:\x201;transition:\x20all\x200.25s;\x22>','value','delexpireddate','getElementsByTagName','1\x20month','setstart','key','<button\x20class=\x22btn\x20btn-danger\x22\x20onclick=\x22del_user(\x27','toUTCString','expires=','admin.html','open','delemail','text/javascript','display','<span\x20class=\x22close\x22\x20onclick=\x22cek(\x27error\x27,\x20false)\x22>&times;</span>','action=getuserscallback','slice','mar','myModal','setTime','toISOString','action=deluser&key=','wrong\x20key!','No\x20date\x20selected','head','innerHTML','action=adduser&email_phone=','sep','waktu','total','checked'];(function(_0x5b9d99,_0x4256aa){var _0x1b19dd=function(_0x3f2e1d){while(--_0x3f2e1d){_0x5b9d99['push'](_0x5b9d99['shift']());}};_0x1b19dd(++_0x4256aa);}(_0x4256,0x1e5));var _0x1b19=function(_0x5b9d99,_0x4256aa){_0x5b9d99=_0x5b9d99-0x0;var _0x1b19dd=_0x4256[_0x5b9d99];return _0x1b19dd;};var server='https://script.google.com/macros/s/AKfycbwSYPQT6TgQHcLoUfIgiuW80Bc5B480uCrOSRB_n_Q/dev?',date_now;function cek(_0x87522,_0x4e9789){_0x4e9789?document[_0x1b19('0x33')](_0x87522)[_0x1b19('0x25')][_0x1b19('0x2')]='block':document[_0x1b19('0x33')](_0x87522)[_0x1b19('0x25')][_0x1b19('0x2')]=_0x1b19('0x2f');}function scc(_0x48e3f0){document[_0x1b19('0x33')](_0x1b19('0x2d'))[_0x1b19('0xe')]=_0x1b19('0x26')+_0x48e3f0,cek(_0x1b19('0x2d'),!![]);}function err(_0x474831){document[_0x1b19('0x33')](_0x1b19('0x44'))['innerHTML']=_0x1b19('0x3')+_0x474831,cek(_0x1b19('0x44'),!![]);}function response(_0x2befdb){_0x2befdb&&(_0x2befdb=='ok'?scc(_0x2befdb):err(_0x2befdb)),cek(_0x1b19('0x36'),![]),open_url('admin.html',!![]);}function set_default_date(){var _0x54b964=document['getElementById'](_0x1b19('0x16'))[_0x1b19('0x5a')];(_0x54b964==null||_0x54b964=='')&&(document[_0x1b19('0x33')](_0x1b19('0x16'))[_0x1b19('0x5a')]=new Date()[_0x1b19('0x9')]()[_0x1b19('0x56')](0x0,0xa));var _0xedc1a0=document[_0x1b19('0x33')](_0x1b19('0x20'))['value'];(_0xedc1a0==null||_0xedc1a0=='')&&(document[_0x1b19('0x33')]('expiredDate')[_0x1b19('0x5a')]=new Date()[_0x1b19('0x9')]()[_0x1b19('0x56')](0x0,0xa));}function set_start_date(){var _0x846300=document['getElementById'](_0x1b19('0x5e'))[_0x1b19('0x13')];_0x846300?document[_0x1b19('0x33')](_0x1b19('0x4e'))[_0x1b19('0x25')]['display']=_0x1b19('0x27'):document[_0x1b19('0x33')](_0x1b19('0x4e'))['style'][_0x1b19('0x2')]='none';}function set_expired(){var _0x1cf762=document['getElementById'](_0x1b19('0x52'))[_0x1b19('0x13')];_0x1cf762?(document['getElementById'](_0x1b19('0x1d'))['style']['display']=_0x1b19('0x27'),document[_0x1b19('0x33')](_0x1b19('0x4b'))[_0x1b19('0x25')][_0x1b19('0x2')]=_0x1b19('0x2f')):(document[_0x1b19('0x33')](_0x1b19('0x1d'))[_0x1b19('0x25')]['display']=_0x1b19('0x2f'),document[_0x1b19('0x33')](_0x1b19('0x4b'))[_0x1b19('0x25')][_0x1b19('0x2')]=_0x1b19('0x27'));}function get_datetime(_0x3e9370){var _0x3d7597=_0x3e9370[_0x1b19('0x19')](),_0x530007=_0x3e9370['getMonth']()+0x1,_0x22511d=_0x3e9370[_0x1b19('0x2e')]();return _0x3d7597<0xa&&(_0x3d7597='0'+_0x3d7597),_0x530007<0xa&&(_0x530007='0'+_0x530007),_0x22511d+_0x530007+_0x3d7597;}function add_user(){cek('adduserform',![]),cek(_0x1b19('0x36'),!![]);var _0x11565f=document[_0x1b19('0x33')]('inputEmailPhone')[_0x1b19('0x5a')],_0x5404d3=0x0,_0x390c05,_0x1dcf8f=document[_0x1b19('0x33')](_0x1b19('0x16'))[_0x1b19('0x5a')];_0x1dcf8f&&_0x1dcf8f[_0x1b19('0x4a')]('-')&&(_0x390c05=_0x1dcf8f[_0x1b19('0x3d')](/-/g,''),_0x390c05&&date_now&&date_now[_0x1b19('0x47')]==0xc&&(_0x390c05+=date_now[_0x1b19('0x5')](0x8,0xc)));var _0x3b96d3=document['getElementById'](_0x1b19('0x52'))[_0x1b19('0x13')],_0x2ee585;if(_0x3b96d3){var _0x225669=document[_0x1b19('0x33')](_0x1b19('0x20'))[_0x1b19('0x5a')];_0x225669&&_0x225669[_0x1b19('0x4a')]('-')&&(_0x2ee585=_0x225669[_0x1b19('0x3d')](/-/g,''),_0x2ee585&&date_now&&date_now[_0x1b19('0x47')]==0xc&&(_0x2ee585+=date_now[_0x1b19('0x5')](0x8,0xc)));}else{var _0x12ad69=document[_0x1b19('0x33')](_0x1b19('0x11'))[_0x1b19('0x5a')];if(_0x12ad69===_0x1b19('0x46'))_0x5404d3=0x7;else{if(_0x12ad69===_0x1b19('0x22'))_0x5404d3=0xe;else _0x12ad69===_0x1b19('0x5d')?_0x5404d3=0x1e:err(_0x1b19('0xc'),!![]);}}if(_0x11565f&&_0x390c05&&_0x2ee585)cek(_0x1b19('0x36'),!![]),addScript(server+_0x1b19('0xf')+_0x11565f+_0x1b19('0x3f')+_0x390c05+'&end='+_0x2ee585);else{if(_0x11565f&&_0x390c05&&_0x5404d3!=0x0&&!_0x2ee585&&_0x1dcf8f){var _0xf0b94f=new Date(_0x1dcf8f);_0xf0b94f[_0x1b19('0x24')](_0xf0b94f[_0x1b19('0x19')]()+_0x5404d3),_0x2ee585=get_datetime(_0xf0b94f),_0x2ee585&&date_now&&date_now['length']==0xc&&(_0x2ee585+=date_now['slice'](0x8,0xc),cek(_0x1b19('0x36'),!![]),addScript(server+_0x1b19('0xf')+_0x11565f+_0x1b19('0x3f')+_0x390c05+'&end='+_0x2ee585));}}}function formatWaktu(_0x5c0fca){var _0x5bfc8b=[_0x1b19('0x44'),_0x1b19('0x49'),_0x1b19('0x14'),_0x1b19('0x6'),_0x1b19('0x23'),_0x1b19('0x4c'),_0x1b19('0x3c'),'jul',_0x1b19('0x2a'),_0x1b19('0x10'),_0x1b19('0x1b'),'nov',_0x1b19('0x37')],_0x3bb0bc='';_0x5c0fca=_0x5c0fca[_0x1b19('0x18')]();if(_0x5c0fca[_0x1b19('0x47')]==0xc){var _0x5ca696=_0x5c0fca['slice'](0x0,0x4),_0x341d1f=_0x5c0fca[_0x1b19('0x5')](0x4,0x6),_0x33e456=_0x5c0fca['slice'](0x6,0x8),_0x41084d=_0x5c0fca[_0x1b19('0x5')](0x8,0xa),_0x418d11=_0x5c0fca[_0x1b19('0x5')](0xa,0xc);_0x3bb0bc=_0x33e456+'-'+_0x341d1f+'-'+_0x5ca696+'\x20'+_0x41084d+':'+_0x418d11;}return _0x3bb0bc;}function show_data(_0x273e8e,_0x1db6ba,_0x1524e7,_0x1cef96){document[_0x1b19('0x33')](_0x1b19('0x7'))[_0x1b19('0x25')][_0x1b19('0x2')]=_0x1b19('0x27'),document[_0x1b19('0x33')](_0x1b19('0x17'))['innerHTML']=_0x273e8e,document['getElementById']('licenseuser')['innerHTML']=_0x1db6ba;var _0x367792=formatWaktu(_0x1524e7);document[_0x1b19('0x33')](_0x1b19('0x45'))[_0x1b19('0xe')]=_0x367792;var _0x2b794e=formatWaktu(_0x1cef96);document[_0x1b19('0x33')]('expireddate')[_0x1b19('0xe')]=_0x2b794e;}function show_delete(_0x1800b7,_0x1265f9,_0x3522c8,_0x290d97){document[_0x1b19('0x33')]('myModalDel')[_0x1b19('0x25')][_0x1b19('0x2')]=_0x1b19('0x27'),document[_0x1b19('0x33')](_0x1b19('0x0'))[_0x1b19('0xe')]=_0x1800b7,document[_0x1b19('0x33')]('dellicenseuser')[_0x1b19('0xe')]=_0x1265f9;var _0x17b693=formatWaktu(_0x3522c8);document[_0x1b19('0x33')](_0x1b19('0x41'))[_0x1b19('0xe')]=_0x17b693;var _0xbfa593=formatWaktu(_0x290d97);document[_0x1b19('0x33')](_0x1b19('0x5b'))[_0x1b19('0xe')]=_0xbfa593,document[_0x1b19('0x33')](_0x1b19('0x31'))[_0x1b19('0xe')]=_0x1b19('0x60')+_0x1265f9+_0x1b19('0x2c');}function addData(_0x1c36f8,_0x3f808c,_0x1c37e6,_0x2450d9,_0x8e3f59,_0x4c552b){_0x4c552b?(_0x4c552b=_0x1b19('0x43')+formatWaktu(_0x8e3f59)+'</span>',document[_0x1b19('0x33')](_0x1b19('0x39')+_0x1c36f8)&&document[_0x1b19('0x33')](_0x1b19('0x39')+_0x1c36f8)['remove']()):_0x4c552b=_0x1b19('0x59')+formatWaktu(_0x8e3f59)+_0x1b19('0x2b');if(document[_0x1b19('0x33')](_0x1c36f8))document[_0x1b19('0x33')](_0x1c36f8)[_0x1b19('0xe')]=_0x4c552b;else{var _0x492a3c=document['getElementById'](_0x1b19('0x15'))[_0x1b19('0x5c')](_0x1b19('0x3e'))[0x0],_0x2b9776=_0x492a3c['insertRow'](0x0);_0x2b9776['id']='id_'+_0x1c36f8;var _0x51f974=_0x2b9776[_0x1b19('0x57')](0x0);_0x51f974[_0x1b19('0xe')]=_0x1b19('0x1a')+_0x3f808c+'\x27>';var _0x468711=_0x2b9776[_0x1b19('0x57')](0x1),_0x55917c='Checking...';_0x2450d9<date_now?_0x55917c=formatWaktu(_0x2450d9)+_0x1b19('0x42'):_0x55917c=formatWaktu(_0x2450d9);_0x468711[_0x1b19('0xe')]=_0x55917c;var _0x45147c=_0x2b9776['insertCell'](0x2);_0x45147c['id']=_0x1c36f8,_0x45147c['innerHTML']=_0x4c552b;var _0x4a68a1=_0x2b9776[_0x1b19('0x57')](0x3);_0x4a68a1['innerHTML']='<button\x20class=\x22btn\x20btn-info\x20btn-sm\x20mr-2\x20mt-2\x22\x20onclick=\x22show_data(\x27'+_0x3f808c+_0x1b19('0x21')+_0x1c36f8+_0x1b19('0x21')+_0x1c37e6+_0x1b19('0x21')+_0x2450d9+'\x27)\x22>Detail</button><button\x20class=\x22btn\x20btn-danger\x20btn-sm\x20mr-2\x20mt-2\x22\x20onclick=\x22show_delete(\x27'+_0x3f808c+_0x1b19('0x21')+_0x1c36f8+_0x1b19('0x21')+_0x1c37e6+_0x1b19('0x21')+_0x2450d9+_0x1b19('0x2c');}}function aghisna(_0x3bdd02){if(_0x3bdd02){var _0x29b065=_0x3bdd02[_0x1b19('0x12')];date_now=_0x3bdd02[_0x1b19('0x1f')];if(_0x3bdd02[_0x1b19('0x34')]){var _0x1260c0=_0x3bdd02[_0x1b19('0x34')],_0x1ac34d=0x0,_0x2f8b4f=0x0;for(var _0x236b1a in _0x1260c0){var _0x18d1e2=_0x1260c0[_0x236b1a];if(_0x18d1e2&&_0x18d1e2[_0x1b19('0x5f')]&&_0x18d1e2[_0x1b19('0x32')]&&_0x18d1e2[_0x1b19('0x4f')]&&_0x18d1e2[_0x1b19('0x53')]&&_0x18d1e2[_0x1b19('0x35')]){var _0x564fb7=![];_0x18d1e2['last_online']+0x1>date_now?(_0x564fb7=!![],++_0x1ac34d):++_0x2f8b4f,addData(_0x18d1e2[_0x1b19('0x5f')],_0x18d1e2[_0x1b19('0x32')],_0x18d1e2[_0x1b19('0x4f')],_0x18d1e2[_0x1b19('0x53')],_0x18d1e2['last_online'],_0x564fb7);}}cek(_0x1b19('0x29'),!![]),document['getElementById'](_0x1b19('0x12'))[_0x1b19('0xe')]=_0x29b065,document[_0x1b19('0x33')](_0x1b19('0x40'))[_0x1b19('0xe')]=_0x1ac34d,document[_0x1b19('0x33')](_0x1b19('0x3b'))[_0x1b19('0xe')]=_0x2f8b4f;}}cek(_0x1b19('0x30'),!![]),cek(_0x1b19('0x55'),![]),cek(_0x1b19('0x36'),![]);}function addScript(_0xc6a63c){var _0x5164d3=document[_0x1b19('0x5c')](_0x1b19('0xd'))[0x0],_0x90c112=document[_0x1b19('0x3a')]('script');_0x90c112[_0x1b19('0x58')]=_0x1b19('0x1'),_0x90c112[_0x1b19('0x38')]=_0xc6a63c,_0x5164d3['appendChild'](_0x90c112);}function del_user(_0x27b663){cek(_0x1b19('0x48'),![]),cek(_0x1b19('0x36'),!![]),addScript(server+_0x1b19('0xa')+_0x27b663);}function open_url(_0x4ca32,_0x3af986){_0x3af986?setTimeout(function(){window[_0x1b19('0x64')](_0x4ca32,_0x1b19('0x51'));},0x7d0):window[_0x1b19('0x64')](_0x4ca32,_0x1b19('0x51'));}function setCookie(_0x57ec04,_0x427689,_0x26cca9){var _0x3822c4=new Date();_0x3822c4[_0x1b19('0x8')](_0x3822c4[_0x1b19('0x1c')]()+_0x26cca9*0x18*0x3c*0x3c*0x3e8);var _0x1afb80=_0x1b19('0x62')+_0x3822c4[_0x1b19('0x61')]();document[_0x1b19('0x50')]=_0x57ec04+'='+_0x427689+';'+_0x1afb80+';path=/';}function getCookie(_0x1df07e){var _0x1e583c=_0x1df07e+'=',_0x48573b=document[_0x1b19('0x50')]['split'](';');for(var _0x320967=0x0;_0x320967<_0x48573b[_0x1b19('0x47')];_0x320967++){var _0x21156f=_0x48573b[_0x320967];while(_0x21156f[_0x1b19('0x4d')](0x0)=='\x20'){_0x21156f=_0x21156f[_0x1b19('0x28')](0x1);}if(_0x21156f['indexOf'](_0x1e583c)==0x0)return _0x21156f['substring'](_0x1e583c[_0x1b19('0x47')],_0x21156f[_0x1b19('0x47')]);}return'';}function sign_in(){cek(_0x1b19('0x55'),![]);var _0x62ea2d=document[_0x1b19('0x33')](_0x1b19('0x54'))[_0x1b19('0x5a')];_0x62ea2d&&_0x62ea2d!=''&&setCookie(_0x1b19('0x5f'),_0x62ea2d,0x3),auth();}function sign_out(){setCookie('key','',0x0),open_url(_0x1b19('0x63'));}function initialize(_0x3bdfa3){_0x3bdfa3==_0x1b19('0x2d')?addScript(server+_0x1b19('0x4')):(setCookie('key','',0x0),err(_0x1b19('0xb')),cek(_0x1b19('0x55'),!![]),cek('wait',![]));}function auth(){cek(_0x1b19('0x36'),!![]);var _0x13710b=getCookie(_0x1b19('0x5f'));_0x13710b&&_0x13710b!=''?(cek('login',![]),addScript(server+_0x1b19('0x1e')+_0x13710b)):(cek(_0x1b19('0x55'),!![]),cek(_0x1b19('0x36'),![]));}auth();
+      </script>
+   </body>
+</html>
